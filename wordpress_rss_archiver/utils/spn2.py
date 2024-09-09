@@ -59,7 +59,7 @@ def is_valid_job_id(s):
 
 
 @retry(try_count=8, retry_interval=2, retry_interval_step=5)
-def _archive(sess: requests.Session, url: str, s3_auth: str,*, if_not_archived_within: str = '30d', skip_first_archive: str = '1', js_behavior_timeout: str = '30'):
+def _archive(sess: requests.Session, url: str, s3_auth: str,*, if_not_archived_within: str = '30d',capture_outlinks: str = '1',skip_first_archive: str = '1', js_behavior_timeout: str = '30'):
     """
     Possible API result:
     {"url":"https://example.com/","job_id":"spn2-0123456789abcdef0123456789abcdef12345678"}
@@ -78,6 +78,7 @@ def _archive(sess: requests.Session, url: str, s3_auth: str,*, if_not_archived_w
         'if_not_archived_within': if_not_archived_within,
         'skip_first_archive': skip_first_archive,
         'js_behavior_timeout': js_behavior_timeout,
+        'capture_outlinks' : capture_outlinks,
         #'capture_screenshot': '1',
     }
     logger.debug('data: %r', data)
