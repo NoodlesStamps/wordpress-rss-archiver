@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 import requests
 import datetime
 import time
+import hashlib
 
 from wordpress_rss_archiver.utils.spn2 import SPN2API
 from wordpress_rss_archiver.utils.requests_patch import SessionMonkeyPatch
@@ -60,15 +61,20 @@ def main():
             title = item["title"]
             print('title:', title)
 
-            guid = item["guid"]
-            print('guid:', guid)
+            if "guid" in item:
+                guid = item["guid"]
+                print('guid:', guid)
+            else:
+                guid = hashlib.md5(item["link"].encode()).hexdigest()
+                print('guid (generated):', guid)
 
             item_url_raw = item["link"]
             item_url = urljoin(feed_url, item_url_raw)
             print('item_url:', item_url)
 
             if item_url in urls_archived:
-                print('Already archived, skip. (or maybe we are in a loop?)') 
+                print('Already archived, skip. (or maybe we are in a loop?)')
+                continue  
 
             time_p: time.struct_time = item["published_parsed"]
             try:
